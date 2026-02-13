@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALEX - iOS Premium Portfolio</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-bg: #000000;
+            --secondary-bg: #1c1c1e;
+            --text-main: #ffffff;
+            --text-dim: #8e8e93;
+            --accent-color: #007aff;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --ios-curve: cubic-bezier(0.4, 0, 0.2, 1);
+            --liquid-ease: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+            --spring-bounce: cubic-bezier(0.5, 1.5, 0.5, 1);
+            --recording-green: #30d158;
+        }
+
+        [data-theme="light"] {
+            --primary-bg: #f2f2f7;
+            --secondary-bg: #ffffff;
+            --text-main: #000000;
+            --text-dim: #636366;
+            --glass-bg: rgba(0, 0, 0, 0.05);
+            --glass-border: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, sans-serif;
+            transition: background-color 0.5s var(--ios-curve), color 0.5s var(--ios-curve);
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- ADVANCED DYNAMIC ISLAND --- */
+        .nav-container {
+            position: fixed;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 38px;
+            background: #000;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5000;
+            transition: width 0.6s var(--liquid-ease), height 0.6s var(--liquid-ease), border-radius 0.6s var(--liquid-ease), background 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 0.5px solid rgba(255,255,255,0.15);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .camera-lens {
+            position: absolute;
+            left: 18px;
+            width: 13px;
+            height: 13px;
+            background: radial-gradient(circle, #1a1a2e 0%, #000 80%);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            box-shadow: inset 0 0 3px rgba(255,255,255,0.2);
+        }
+
+        .recording-dot {
+            position: absolute;
+            right: 18px;
+            width: 7px;
+            height: 7px;
+            background: var(--recording-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--recording-green);
+            transition: all 0.4s ease;
+        }
+
+        .island-logo {
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(
+                90deg, 
+                #8F4A6A, #F27DBB, #F6B6D8, #7A4FA3, #1E1C2A, #8F4A6A 
+            );
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: embux-shine 3s linear infinite;
+            transition: transform 0.4s var(--liquid-ease), opacity 0.3s;
+        }
+
+        @keyframes embux-shine {
+            to { background-position: -200% center; }
+        }
+
+        .nav-container:hover {
+            width: 350px;
+            height: 65px;
+            border-radius: 35px;
+            background: #000;
+        }
+
+        .nav-container:hover .camera-lens { transform: scale(0); opacity: 0; }
+        .nav-container:hover .recording-dot { transform: scale(0); opacity: 0; }
+        .nav-container:hover .island-logo { transform: translateY(-40px); opacity: 0; }
+
+        .nav-links {
+            position: absolute;
+            display: flex;
+            gap: 25px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s var(--liquid-ease);
+            pointer-events: none;
+        }
+
+        .nav-container:hover .nav-links {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.3s;
+            padding: 5px 10px;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        /* --- CONTENT LAYOUT --- */
+        .main-wrapper { max-width: 1100px; margin: 0 auto; padding: 140px 20px 0; }
+        .hero-container { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; margin-bottom: 80px; }
+        .swiper { width: 100%; height: 550px; border-radius: 45px; border: 1px solid var(--glass-border); }
+        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .intro-text { font-family: 'Syne', sans-serif; font-size: 38px; font-weight: 800; margin-bottom: 20px; }
+        .section-title { font-size: 26px; font-weight: 700; margin: 40px 0 25px; }
+
+        /* --- iOS ANIMATED CARDS --- */
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        
+        .ios-card { 
+            background: var(--secondary-bg); 
+            border-radius: 32px; 
+            padding: 40px 30px; 
+            border: 1px solid var(--glass-border);
+            text-decoration: none;
+            display: block;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s var(--ios-curve), box-shadow 0.4s var(--ios-curve);
+            cursor: pointer;
+        }
+
+        .ios-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .ios-card:active { transform: scale(0.97); }
+
+        .ios-card h3 { color: var(--text-main); font-size: 1.5rem; margin-bottom: 12px; }
+        .ios-card p { color: var(--text-dim); line-height: 1.5; font-size: 0.95rem; }
+
+        .ios-card .arrow-icon {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: 0.3s;
+        }
+
+        .ios-card:hover .arrow-icon { opacity: 1; transform: translateX(0); }
+
+        /* --- SOCIAL ICONS --- */
+        .social-icons { display: flex; justify-content: center; gap: 25px; margin: 35px 0; }
+
+        .social-icons a { 
+            width: 60px; height: 60px; background: var(--glass-bg); border-radius: 18px; 
+            display: flex; align-items: center; justify-content: center; color: var(--text-main); 
+            text-decoration: none; border: 1px solid var(--glass-border); font-size: 1.5rem;
+            position: relative;
+            transition: transform 0.5s var(--spring-bounce), background 0.3s ease, box-shadow 0.4s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .social-icons a:hover {
+            transform: translateY(-10px) scale(1.15);
+            background: var(--accent-color);
+            color: #fff;
+            box-shadow: 0 15px 30px rgba(0, 122, 255, 0.3);
+        }
+
+        .social-icons a.wa:hover { background: #25D366; }
+        .social-icons a.tg:hover { background: #0088cc; }
+        .social-icons a.fb:hover { background: #1877F2; }
+        .social-icons a.ig:hover { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+
+        .big-logo-alex { font-family: 'Syne', sans-serif; font-size: clamp(5rem, 18vw, 12rem); font-weight: 800; text-align: center; background: linear-gradient(180deg, var(--text-main) 0%, var(--text-dim) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 100px 0; opacity: 0.8; }
+        
+        footer { padding: 80px 0 40px; text-align: center; background: var(--secondary-bg); border-radius: 50px 50px 0 0; }
+
+        .theme-switch { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 15px; display: grid; place-items: center; cursor: pointer; z-index: 6000; }
+
+        @media (max-width: 768px) {
+            .hero-container { grid-template-columns: 1fr; text-align: center; }
+            .swiper { height: 400px; }
+            .nav-container:hover { width: 90vw; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="theme-switch" id="themeToggle" onclick="toggleTheme()">
+    <i class="fas fa-moon" id="themeIcon"></i>
+</div>
+
+<div class="nav-container">
+    <div class="camera-lens"></div>
+    <div class="island-logo">ALEX</div>
+    <div class="recording-dot"></div>
+    
+    <div class="nav-links">
+        <a href="#hero">Home</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+    </div>
+</div>
+
+<div class="main-wrapper">
+    <section class="hero-container" id="hero">
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src="https://i.postimg.cc/nVBrKZBy/iphone_14_pro_max_(6).jpg" alt="Alex"></div>
+                <div class="swiper-slide"><img src="https://i.postimg.cc/mD4q0QpD/Videoshot_20251213_015858.jpg" alt="Alex"></div>
+                <div class="swiper-slide"><img src="https://i.postimg.cc/qvzdLXWs/iphone_14_pro_max_(11).jpg" alt="Alex"></div>
+            </div>
+        </div>
+
+        <div class="content">
+            <h1 class="intro-text">Hi, I'm Alex</h1>
+            <p style="color: var(--text-dim); line-height: 1.6; font-size: 1.15rem;">
+                Crafting premium digital experiences with an eye for detail and Apple-inspired aesthetics.
+            </p>
+        </div>
+    </section>
+
+    <h2 class="section-title" id="projects">Latest Projects</h2>
+    <div class="project-grid">
+        <a href="https://alexjameshq.github.io/EMBUX.io/" class="ios-card">
+            <h3>EMBUX</h3>
+            <p>Discover 100% verified and authentic online earning platforms right here. Start building your career from home.</p>
+            <i class="fas fa-arrow-right arrow-icon"></i>
+        </a>
+
+        <a href="https://alexjameshq.github.io/DollarValy.io/" class="ios-card">
+            <h3>DollarValy</h3>
+            <p>Your Trusted Dollar Exchange Partner. Sell your dollars safely and quickly with 100% transparency.</p>
+            <i class="fas fa-arrow-right arrow-icon"></i>
+        </a>
+
+        <a href="https://alexjameshq.github.io/iOS-FILTER.io/" class="ios-card">
+            <h3>Gemini AI</h3>
+            <p>Optimized for Gemini AI. Inspired by Apple iOS design systems and fluid interactions.</p>
+            <i class="fas fa-arrow-right arrow-icon"></i>
+        </a>
+    </div> 
+
+    <div class="big-logo-alex">ALEX</div>
+
+    <footer id="contact">
+        <div class="social-icons">
+            <a href="https://wa.me/8801977547920" class="wa" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://t.me/Alex_EMBUX7920" class="tg" title="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            <a href="https://www.facebook.com/share/1a4SajmQ8c/" class="fb" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/md.amirul.islam8504?igsh=dDg5cG5nZTB6aDBx" class="ig" title="Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p style="color: var(--text-dim); font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 50px; opacity: 0.6;">
+            ©2026 Designed by Alex James • Inspired by Apple Design
+        </p>
+    </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+    // --- Memory Logic (যাতে রিফ্রেশ করলেও মুড না বদলায়) ---
+    const body = document.body;
+    const themeIcon = document.getElementById('themeIcon');
+
+    // চেক করা হচ্ছে আগে কোনো থিম সেভ করা আছে কিনা
+    const savedTheme = localStorage.getItem('userTheme');
+
+    if (savedTheme) {
+        body.setAttribute('data-theme', savedTheme);
+        themeIcon.classList.replace(savedTheme === 'dark' ? 'fa-sun' : 'fa-moon', savedTheme === 'dark' ? 'fa-moon' : 'fa-sun');
+    } else {
+        // ডিফল্ট ডার্ক মোড
+        body.setAttribute('data-theme', 'dark');
+    }
+
+    function toggleTheme() {
+        const isDark = body.getAttribute('data-theme') === 'dark';
+        const newTheme = isDark ? 'light' : 'dark';
+        
+        body.setAttribute('data-theme', newTheme);
+        themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+        
+        // ইউজারের পছন্দ সেভ করা হচ্ছে
+        localStorage.setItem('userTheme', newTheme);
+    }
+
+    const swiper = new Swiper(".mySwiper", {
+        loop: true,
+        autoplay: { delay: 4500, disableOnInteraction: false },
+        speed: 1200,
+        effect: "fade"
+    });
+</script>
+
+</body>
+</html>
